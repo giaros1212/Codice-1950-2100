@@ -156,6 +156,12 @@ def fase1_estrazione(dir_modello_base, nome_modello):
                         lon_model = 360 + lon_apt
                         
                     da_local = ds[var_name].sel(lat=lat_apt, lon=lon_model, method='nearest')
+                    
+                    # Conversione in Celsius se il file usa i Kelvin
+                    if da_local.attrs.get('units') == 'K':
+                        da_local = da_local - 273.15
+                        da_local.attrs['units'] = '°C'
+                        
                     ds_out = da_local.to_dataset(name='tasmax')
                     
                     nome_out = f"{icao}_{nome_modello}_{anno}_{scenario}.nc"
